@@ -2,7 +2,7 @@
 {{- $releaseName := .Release.Name -}}
 {{- $serviceName := include "prometheus.pushgateway.fullname" . }}
 {{- $servicePort := .Values.pushgateway.service.servicePort -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io
 kind: Ingress
 metadata:
 {{- if .Values.pushgateway.ingress.annotations }}
@@ -21,8 +21,9 @@ spec:
         paths:
           - path: /{{ rest $url | join "/" }}
             backend:
-              serviceName: {{ $serviceName }}
-              servicePort: {{ $servicePort }}
+              service:
+                name: {{ $serviceName }}
+                port: {{ $servicePort }}
   {{- end -}}
 {{- if .Values.pushgateway.ingress.tls }}
   tls:

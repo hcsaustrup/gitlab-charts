@@ -2,7 +2,7 @@
 {{- if eq (include "gitlab.ingress.enabled" $) "true" -}}
 {{- $hostname := include "registry.hostname" . -}}
 {{- $tlsSecret := include "registry.tlsSecret" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io
 kind: Ingress
 metadata:
   name: {{ template "fullname" . }}
@@ -27,8 +27,9 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ template "fullname" . }}
-              servicePort: {{ .Values.service.externalPort }}
+              service:
+                name: {{ template "fullname" . }}
+                port: {{ .Values.service.externalPort }}
   {{- if (and $tlsSecret (eq (include "gitlab.ingress.tls.enabled" $) "true" )) }}
   tls:
     - hosts:
