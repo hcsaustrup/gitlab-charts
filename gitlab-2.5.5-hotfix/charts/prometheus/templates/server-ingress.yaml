@@ -3,7 +3,7 @@
 {{- $releaseName := .Release.Name -}}
 {{- $serviceName := include "prometheus.server.fullname" . }}
 {{- $servicePort := .Values.server.service.servicePort -}}
-apiVersion: networking.k8s.io
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
 {{- if .Values.server.ingress.annotations }}
@@ -24,6 +24,7 @@ spec:
       http:
         paths:
           - path: /{{ rest $url | join "/" }}
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ $serviceName }}
