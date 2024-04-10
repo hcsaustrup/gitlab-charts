@@ -29,7 +29,8 @@ spec:
             backend:
               service:
                 name: {{ template "fullname" . }}
-                port: {{ .Values.service.externalPort }}
+                port:
+                  number: {{ .Values.service.externalPort }}
   {{- if (and $tlsSecret (eq (include "gitlab.ingress.tls.enabled" $) "true" )) }}
   tls:
     - hosts:

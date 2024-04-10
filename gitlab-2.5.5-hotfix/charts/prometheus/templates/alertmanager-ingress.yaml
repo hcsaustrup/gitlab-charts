@@ -26,7 +26,8 @@ spec:
             backend:
               service:
                 name: {{ $serviceName }}
-                port: {{ $servicePort }}
+                port:
+                  number: {{ $servicePort }}
   {{- end -}}
 {{- if .Values.alertmanager.ingress.tls }}
   tls:

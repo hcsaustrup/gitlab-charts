@@ -27,7 +27,8 @@ spec:
           - backend:
               service:
                 name: {{ .Release.Name }}-grafana
-                port: 80
+                port:
+                  number: 80
             path: /-/grafana
   {{- if (and $tlsSecret (eq (include "gitlab.ingress.tls.enabled" $) "true" )) }}
   tls:
