@@ -34,6 +34,7 @@ spec:
 {{ toYaml $extraPaths | indent 10 }}
 {{- end }}
           - path: {{ $ingressPath }}
+            pathType: ImplementationSpecific
             backend:
               service
                 name: {{ $fullName }}
