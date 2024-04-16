@@ -26,12 +26,16 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ template "fullname" . }}
-              servicePort: {{ .Values.service.workhorseExternalPort }}
+              service:
+                name: {{ template "fullname" . }}
+                port:
+                  number: {{ .Values.service.workhorseExternalPort }}
           - path: /admin/sidekiq
             backend:
-              serviceName: {{ template "fullname" . }}
-              servicePort: {{ .Values.service.externalPort }}
+              service:
+                name: {{ template "fullname" . }}
+                port:
+                  number: {{ .Values.service.externalPort }}
   {{- if (and $tlsSecret (eq (include "gitlab.ingress.tls.enabled" $) "true" )) }}
   tls:
     - hosts:
