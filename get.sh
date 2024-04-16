@@ -2,6 +2,9 @@
 
 set -eu
 
+helm repo add gitlab https://charts.gitlab.io/ || true
+helm repo update gitlab
+
 CHART="${1:-}"
 VERSION="${2:-}"
 
