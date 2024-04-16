@@ -26,9 +26,12 @@ spec:
       http:
         paths:
           - path: /
+            pathType: ImplementationSpecific
             backend:
-              serviceName: {{ template "minio.fullname" . }}-svc
-              servicePort: {{ .Values.servicePort }}
+              service:
+                name: {{ template "minio.fullname" . }}-svc
+                port:
+                  number: {{ .Values.servicePort }}
   {{- if (and $tlsSecret (eq (include "gitlab.ingress.tls.enabled" $) "true" )) }}
   tls:
     - hosts:

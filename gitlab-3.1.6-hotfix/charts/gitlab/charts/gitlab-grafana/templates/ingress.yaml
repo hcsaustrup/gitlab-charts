@@ -1,7 +1,7 @@
 {{- if .Values.global.grafana.enabled -}}
 {{- $gitlabHostname := include "gitlab.gitlab.hostname" . -}}
 {{- $tlsSecret := include "unicorn.tlsSecret" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Release.Name }}-grafana
@@ -25,9 +25,12 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ .Release.Name }}-grafana
-              servicePort: 80
+              service:
+                name: {{ .Release.Name }}-grafana
+                port:
+                  number: 80
             path: /-/grafana
+            pathType: ImplementationSpecific
   {{- if (and $tlsSecret (eq (include "gitlab.ingress.tls.enabled" $) "true" )) }}
   tls:
     - hosts:
