@@ -3,7 +3,7 @@
 {{- $serviceName := include "prometheus.alertmanager.fullname" . }}
 {{- $servicePort := .Values.alertmanager.service.servicePort -}}
 {{- $extraPaths := .Values.alertmanager.ingress.extraPaths -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
 {{- if .Values.alertmanager.ingress.annotations }}
@@ -27,9 +27,12 @@ spec:
 {{ toYaml $extraPaths | indent 10 }}
 {{- end }}
           - path: /{{ rest $url | join "/" }}
+            pathType: ImplementationSpecific
             backend:
-              serviceName: {{ $serviceName }}
-              servicePort: {{ $servicePort }}
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $servicePort }}
   {{- end -}}
 {{- if .Values.alertmanager.ingress.tls }}
   tls:

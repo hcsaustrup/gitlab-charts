@@ -4,7 +4,7 @@
 {{- $serviceName := include "prometheus.server.fullname" . }}
 {{- $servicePort := .Values.server.service.servicePort -}}
 {{- $extraPaths := .Values.server.ingress.extraPaths -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
 {{- if .Values.server.ingress.annotations }}
@@ -28,9 +28,12 @@ spec:
 {{ toYaml $extraPaths | indent 10 }}
 {{- end }}
           - path: /{{ rest $url | join "/" }}
+            pathType: ImplementationSpecific
             backend:
-              serviceName: {{ $serviceName }}
-              servicePort: {{ $servicePort }}
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $servicePort }}
   {{- end -}}
 {{- if .Values.server.ingress.tls }}
   tls:

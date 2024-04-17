@@ -2,7 +2,7 @@
 {{- if eq (include "gitlab.ingress.enabled" $) "true" -}}
 {{- $gitlabHostname := include "gitlab.gitlab.hostname" . -}}
 {{- $tlsSecret := include "unicorn.tlsSecret" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "fullname" . }}
@@ -25,13 +25,19 @@ spec:
       http:
         paths:
           - path: /
+            pathType: ImplementationSpecific
             backend:
-              serviceName: {{ template "fullname" . }}
-              servicePort: {{ .Values.service.workhorseExternalPort }}
+              service:
+                name: {{ template "fullname" . }}
+                port:
+                  number: {{ .Values.service.workhorseExternalPort }}
           - path: /admin/sidekiq
+            pathType: ImplementationSpecific
             backend:
-              serviceName: {{ template "fullname" . }}
-              servicePort: {{ .Values.service.externalPort }}
+              service:
+                name: {{ template "fullname" . }}
+                port:
+                  number: {{ .Values.service.externalPort }}
   {{- if (and $tlsSecret (eq (include "gitlab.ingress.tls.enabled" $) "true" )) }}
   tls:
     - hosts:
