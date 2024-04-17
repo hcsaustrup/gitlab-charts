@@ -6,7 +6,7 @@
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
 apiVersion: networking.k8s.io/v1beta1
 {{ else }}
-apiVersion: networking.k8s.io/v1
+apiVersion: extensions/v1beta1
 {{ end -}}
 kind: Ingress
 metadata:
@@ -32,12 +32,9 @@ spec:
 {{ toYaml $extraPaths | indent 10 }}
 {{- end }}
           - path: /{{ rest $url | join "/" }}
-            pathType: ImplementationSpecific
             backend:
-              service:
-                name: {{ $serviceName }}
-                port:
-                  number: {{ $servicePort }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
   {{- end -}}
 {{- if .Values.alertmanager.ingress.tls }}
   tls:
